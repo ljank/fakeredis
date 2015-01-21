@@ -3,6 +3,10 @@ source "https://rubygems.org"
 gem 'rake'
 gem 'rdoc'
 
+group :test do
+  gem 'timecop', '~> 0.7.1'
+end
+
 platforms :rbx do
   gem 'racc'
   gem 'rubysl', '~> 2.0'

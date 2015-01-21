@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timecop'
 
 module FakeRedis
   describe "KeysMethods" do
@@ -71,9 +72,13 @@ module FakeRedis
     end
 
     it "should set a key's time to live in miliseconds" do
-      @client.set("key1", "1")
-      @client.pexpire("key1", 2200)
-      @client.pttl("key1").should be_within(0.5).of(2200)
+      Timecop.freeze(Time.now) do |frozen_time|
+        @client.set("key1", "1")
+        @client.pexpire("key1", 2200)
+        @client.pttl("key1").should be == 2200
+        Timecop.travel(Time.now.to_i + 1)
+        @client.pttl("key1").should be == 1200
+      end
     end
 
     it "should set the expiration for a key as a UNIX timestamp" do

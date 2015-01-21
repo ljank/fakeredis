@@ -591,7 +591,7 @@ class Redis
 
       def pttl(key)
         if data.expires.include?(key) && (ttl = data.expires[key].to_f - Time.now.to_f) > 0
-          ttl * 1000
+          (ttl * 1000).to_i
         else
           exists(key) ? -1 : -2
         end
